@@ -180,6 +180,16 @@ function SplitVisualCard({ project, onSelect }) {
             {project.description}
           </p>
         </div>
+        <div className="flex flex-wrap gap-2">
+          {project.tech.slice(0, 3).map((t, i) => (
+            <span
+              key={i}
+              className="text-[10px] font-bold tracking-wider uppercase text-slate-500 dark:text-zinc-500"
+            >
+              {t} {i < 2 && '•'}
+            </span>
+          ))}
+        </div>
       </div>
     </CardWrapper>
   );

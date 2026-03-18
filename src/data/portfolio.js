@@ -97,7 +97,7 @@ export const PROJECTS = [
   {
     id: 1,
     title: 'Bengaldeli - Multivendor E-commerce',
-    role: 'Full Stack Engineer',
+    role: 'Full-Stack',
     year: '2024',
     featured: true,
 
@@ -115,13 +115,13 @@ export const PROJECTS = [
   {
     id: 2,
     title: 'QuickHire - Job Portal',
-    role: 'Full-Stack Engineer',
+    role: 'Full-Stack',
     year: '2026',
     featured: false,
 
     longDescription:
-      'QuickHire optimizes the recruitment lifecycle by streamlining job postings and applications. I implemented a robust caching layer using Redis to enhance performance and used D3.js to visualize hiring trends and data points. The platform features a dedicated employer dashboard, a custom-built dark-mode design system, and a Firebase-backed real-time notification system for application updates.',
-    tech: ['React.js', 'Firebase', 'Redis', 'D3.js', 'Material UI', 'Node.js'],
+      'QuickHire is a modern MERN-based job portal that streamlines the recruitment process for both job seekers and employers. It offers real-time job search, seamless applications, and a fully responsive user experience. The platform includes a secure backend with validated APIs and an admin dashboard for efficient job management with instant UI updates.',
+    tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'Zustand', 'Axios ', 'Tailwind CSS'],
 
     link: 'https://yeasin-quickhire.netlify.app/',
     github: 'https://github.com/ysncodex/QuickHire',
@@ -132,26 +132,26 @@ export const PROJECTS = [
   // Project 3 — Split Visual Card
   {
     id: 3,
-    title: 'Aura AI Writer',
-    role: 'Frontend Engineer',
+    title: 'Fashion Shop',
+    role: 'Frontend',
     year: '2023',
     featured: false,
 
     longDescription:
-      "Aura AI streamlines content creation by interfacing directly with OpenAI's GPT models. I engineered a rich-text editor from the ground up that supports markdown shortcuts and real-time SEO scoring. The backend architecture handles prompt engineering and dynamic context-aware content generation, allowing users to export production-ready articles in seconds.",
-    tech: ['OpenAI API', 'Vue.js', 'Node.js', 'Express.js', 'MongoDB', 'Tailwind'],
+      'A fully responsive e-commerce website showcasing product listings with dynamic filtering and search functionality. Built from scratch using vanilla JavaScript, HTML5, and CSS3 to demonstrate strong fundamentals in DOM manipulation, event handling, and responsive design principles.',
+    tech: ['JavaScript', 'CSS3'],
 
     link: '#',
-    github: '#',
-    color: 'from-orange-400 to-red-500',
-    image: '',
+    github: 'https://github.com/ysncodex/Responsive-Fashion-Shop',
+    color: 'from-sky-400 to-blue-900',
+    image: '/images/project-4.jpg',
   },
 
   // Project 4 — Wide Banner Card
   {
     id: 4,
     title: 'Instagram Clone',
-    role: 'Full Stack Developer',
+    role: 'Full-Stack',
     year: '2024',
     featured: false,
 
