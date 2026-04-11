@@ -132,19 +132,27 @@ export const PROJECTS = [
   // Project 3 — Split Visual Card
   {
     id: 3,
-    title: 'Fashion Shop',
+    title: 'Cafe ERP',
     role: 'Frontend',
-    year: '2023',
+    year: '2026',
     featured: false,
 
     longDescription:
-      'A fully responsive e-commerce website showcasing product listings with dynamic filtering and search functionality. Built from scratch using vanilla JavaScript, HTML5, and CSS3 to demonstrate strong fundamentals in DOM manipulation, event handling, and responsive design principles.',
-    tech: ['JavaScript', 'CSS3'],
+      'A user-friendly cafe operations dashboard built with React and TypeScript. It helps owners and managers track sales, expenses, fund movements, and reports from one place, with optional backend API integration.',
+    tech: [
+      'React',
+      'React DOM',
+      'Typescript',
+      'React Router',
+      'Axios',
+      'Tailwind CSS',
+      'Lucide React',
+    ],
 
-    link: '#',
-    github: 'https://github.com/ysncodex/Responsive-Fashion-Shop',
+    link: 'https://cafeerp.netlify.app/',
+    github: 'https://github.com/ysncodex/Cafe-ERP',
     color: 'from-sky-400 to-blue-900',
-    image: '/images/project-4.jpg',
+    image: '/images/project-4.png',
   },
 
   // Project 4 — Wide Banner Card
