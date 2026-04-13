@@ -86,7 +86,7 @@ export const EXPERIENCE = [
     id: 2,
     role: 'Associate Software Engineer',
     company: 'Cultive8 Technologies Limited',
-    period: 'September 2024 - December 2025',
+    period: 'March 2024 - August 2024',
     tech: [
       'React.js',
       'Node.js',
