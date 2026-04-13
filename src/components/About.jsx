@@ -70,7 +70,7 @@ function DownloadCVButton() {
           size={18}
           className="text-slate-400 dark:text-zinc-500 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors"
         />
-        Download CV
+        Download Resume
       </a>
     </div>
   );

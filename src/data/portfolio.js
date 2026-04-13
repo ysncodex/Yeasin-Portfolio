@@ -17,7 +17,7 @@ export const PERSONAL_INFO = {
 
   // Documents
   resume: '/docs/Md_Yeasin_Resume.pdf',
-  cv: '/docs/Md_Yeasin_CV.pdf',
+  cv: '/docs/Md_Yeasin_Resume.pdf',
 
   // Media
   avatar: '/images/avatar.jpg',
