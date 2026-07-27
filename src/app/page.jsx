@@ -63,36 +63,38 @@ function useTheme() {
 function useScrollSpy() {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
-  const scrollRafRef = useRef(null);
 
   useEffect(() => {
+    // Handle the header background toggle
     const handleScroll = () => {
-      if (scrollRafRef.current) return;
-      scrollRafRef.current = requestAnimationFrame(() => {
-        setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
-
-        const lastIndex = SECTIONS.length - 1;
-        const viewportMid = window.innerHeight * 0.5;
-        let current = SECTIONS[0];
-
-        for (let i = 0; i < SECTIONS.length; i++) {
-          const el = document.getElementById(SECTIONS[i]);
-          if (!el) continue;
-          const top = el.getBoundingClientRect().top;
-          // Last section can never scroll to the top, so use a generous threshold
-          const offset = i === lastIndex ? viewportMid : INTERSECTION_OFFSET;
-          if (top <= offset) current = SECTIONS[i];
-        }
-
-        setActiveSection(current);
-        scrollRafRef.current = null;
-      });
+      setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Handle section highlighting with IntersectionObserver
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        // Triggers when a section crosses the middle of the screen
+        rootMargin: '-40% 0px -40% 0px',
+        threshold: 0,
+      }
+    );
+
+    SECTIONS.forEach((section) => {
+      const el = document.getElementById(section);
+      if (el) observer.observe(el);
+    });
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      if (scrollRafRef.current) cancelAnimationFrame(scrollRafRef.current);
+      observer.disconnect();
     };
   }, []);
 

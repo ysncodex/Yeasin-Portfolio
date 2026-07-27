@@ -14,8 +14,8 @@ const SKILL_ICONS = [Code2, Cpu, Database, Layers];
 function SectionHeader() {
   return (
     <div className="flex items-center gap-4 mb-12">
-      <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
-        <Terminal className="text-violet-600 dark:text-violet-500" /> About Me
+      <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3 tracking-tight">
+        <Terminal className="text-violet-600 dark:text-violet-500 w-8 h-8" /> About Me
       </h2>
       <div className="h-px bg-slate-200 dark:bg-zinc-800 grow max-w-xs"></div>
     </div>
@@ -26,29 +26,27 @@ function Bio() {
   return (
     <div className="space-y-6 text-slate-600 dark:text-zinc-400 leading-relaxed text-lg">
       <p>
-        Hi, I&apos;m {PERSONAL_INFO.name} — a Frontend-focused Full-Stack Engineer passionate about
-        building fast, scalable, and user-centered web applications. I specialize in React.js and
-        modern JavaScript ecosystems, with full-stack experience in Node.js and .NET Core, along
-        with additional experience in Next.js and TypeScript.
+        Hi, I&apos;m{' '}
+        <span className="font-semibold text-slate-900 dark:text-slate-200">
+          {PERSONAL_INFO.name}
+        </span>{' '}
+        — a Full-Stack Engineer passionate about building fast, scalable, and user-centered web
+        applications. I specialize in the React.js ecosystem, with robust backend experience in
+        Node.js, .NET Core, and relational databases like MSSQL.
       </p>
       <p>
-        At Cultive8 Technologies, I contributed to enterprise ERP systems by building
-        production-ready modules and improving system performance — reducing API latency and
-        resolving 45+ production issues. I also developed a scalable React component library using
-        Redux and Zustand.
+        During my time at Cultive8 Technologies, I contributed to enterprise ERP systems by building
+        production-ready modules and tackling system performance—reducing API latency and resolving
+        over 45 production issues. I thrive on creating clean architectures and responsive UI
+        systems that prioritize both accessibility and developer experience.
       </p>
       <p>
-        I enjoy creating clean architectures, reusable components, and responsive UI systems with
-        tools like Tailwind CSS and Material UI, focusing on performance, accessibility, and
-        maintainable code.
-      </p>
-      <p>
-        When I&apos;m not coding, I&apos;m usually exploring modern frontend architectures,
-        performance optimization techniques, and ways to improve developer experience.
+        When I&apos;m not writing code on my favorite tactile mechanical keyboard, you can usually
+        find me out for a walk, enjoying good food, or exploring new frontend architectures.
       </p>
       <p>
         I hold a <strong>B.Sc. in Computer Science & Engineering</strong> from Green University of
-        Bangladesh, with a core focus on building scalable, full-stack software solutions.
+        Bangladesh, which laid the foundation for my approach to scalable software design.
       </p>
 
       <DownloadCVButton />
@@ -58,13 +56,13 @@ function Bio() {
 
 function DownloadCVButton() {
   return (
-    <div className="pt-4">
+    <div className="pt-6">
       <a
         href={PERSONAL_INFO.cv}
         target="_blank"
         rel="noreferrer"
         download
-        className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 hover:border-violet-500 dark:hover:border-violet-500 text-slate-900 dark:text-white font-bold rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-950 group"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 hover:border-violet-500 dark:hover:border-violet-500/50 text-slate-900 dark:text-white font-bold rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-950 group"
       >
         <Download
           size={18}
@@ -85,11 +83,11 @@ function SkillGroup({ skillGroup, idx }) {
         {Icon && <Icon size={18} className="text-violet-600 dark:text-violet-400" />}
         {skillGroup.category}
       </h3>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2.5">
         {skillGroup.items.map((skill, sIdx) => (
           <span
             key={sIdx}
-            className="px-4 py-2 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-full text-sm font-mono text-slate-600 dark:text-zinc-300 hover:border-violet-400 dark:hover:border-violet-500/50 hover:text-violet-600 dark:hover:text-violet-300 transition-all hover:-translate-y-1 shadow-sm dark:shadow-none cursor-default"
+            className="px-3.5 py-1.5 bg-slate-50 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800 rounded-lg text-sm font-mono text-slate-700 dark:text-zinc-300 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:border-violet-300 dark:hover:border-violet-500/50 hover:text-violet-700 dark:hover:text-violet-300 transition-all cursor-default"
           >
             {skill}
           </span>
@@ -101,7 +99,7 @@ function SkillGroup({ skillGroup, idx }) {
 
 function SkillsList() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-white dark:bg-zinc-950/50 p-8 rounded-3xl border border-slate-100 dark:border-zinc-800/50 shadow-sm">
       {SKILLS.map((skillGroup, idx) => (
         <SkillGroup key={idx} skillGroup={skillGroup} idx={idx} />
       ))}
@@ -115,10 +113,10 @@ function SkillsList() {
 
 export default function About() {
   return (
-    <section id="about" className="scroll-mt-32">
+    <section id="about" className="scroll-mt-32 max-w-6xl mx-auto">
       <SectionHeader />
 
-      <div className="grid md:grid-cols-2 gap-16">
+      <div className="grid lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-20 items-start">
         <Bio />
         <SkillsList />
       </div>

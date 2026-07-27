@@ -76,10 +76,6 @@ export const metadata = {
     canonical: SITE_URL,
   },
   manifest: '/manifest.json',
-  icons: {
-    icon: '/images/avatar.jpg',
-    apple: '/images/avatar.jpg',
-  },
 };
 
 /* ─────────────────────────────────────────────

@@ -1,23 +1,15 @@
 import { Github, Linkedin, Mail } from 'lucide-react';
 import { PERSONAL_INFO } from '@/data/portfolio';
 
-/* ─────────────────────────────────────────────
-   Constants
-   ───────────────────────────────────────────── */
-
 const SOCIAL_LINKS = [
   { href: PERSONAL_INFO.github, icon: Github, external: true },
   { href: PERSONAL_INFO.linkedin, icon: Linkedin, external: true },
   { href: `mailto:${PERSONAL_INFO.email}`, icon: Mail, external: false },
 ];
 
-/* ─────────────────────────────────────────────
-   Sub-components
-   ───────────────────────────────────────────── */
-
 function Divider() {
   return (
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-linear-to-r from-transparent via-slate-200 dark:via-zinc-800 to-transparent"></div>
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-zinc-800 to-transparent"></div>
   );
 }
 
@@ -38,17 +30,15 @@ function SocialLinks() {
   );
 }
 
-/* ─────────────────────────────────────────────
-   Main Component
-   ───────────────────────────────────────────── */
-
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="relative z-10 py-8 text-center">
       <Divider />
       <SocialLinks />
       <p className="text-slate-500 dark:text-zinc-600 font-mono text-sm">
-        Designed & Built by {PERSONAL_INFO.name} © 2026
+        Designed & Built by {PERSONAL_INFO.name} © {currentYear}
       </p>
     </footer>
   );
