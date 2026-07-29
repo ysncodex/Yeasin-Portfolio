@@ -6,7 +6,7 @@ export const PERSONAL_INFO = {
   name: 'Md Yeasin',
   role: 'Frontend-Focused Full-Stack Engineer',
   tagline: 'Frontend | Full-Stack Engineer',
-  bio: "I'm a Full-Stack Engineer who enjoys turning complex ideas into fast, responsive, and user-friendly web applications. My core stack includes React.js, MERN Stack, and .NET Core, with additional experience in Next.js and TypeScript. I focus on writing clean, scalable code and delivering smooth user experiences.",
+  bio: "I'm a Full-Stack Engineer who turns complex ideas into fast, responsive, user-friendly web applications. My core stack spans the MERN stack, Next.js, TypeScript, and .NET Core, and I focus on writing clean, scalable code that holds up in production.",
 
   // Contact
   email: 'yeasin7y@gmail.com',
@@ -46,7 +46,7 @@ export const SKILLS = [
   },
   {
     category: 'Database',
-    items: ['MongoDB', 'MySQL', 'Redis'],
+    items: ['MongoDB', 'MSSQL', 'PostgreSQL', 'Redis'],
   },
   {
     category: 'Tools & Cloud',
@@ -75,9 +75,9 @@ export const EXPERIENCE = [
       'Azure',
     ],
     description: [
-      'Developed and enhanced enterprise ERP modules (Attendance, Payroll, Plucking and Employee Management) using React.js, Node.js and .NET Core., delivering seamless end-to-end functionality for enterprise environments.',
+      'Developed and enhanced enterprise ERP modules (Attendance, Payroll, Plucking and Employee Management) using React.js, Node.js and .NET Core, delivering seamless end-to-end functionality for enterprise environments.',
       'Refactored existing APIs and backend modules to improve reporting and data-processing performance by 30%.',
-      'Optimized backend infrastructure through database query tuning, API restructuring, and robust validation, significantly improving overall system reliability and scalability',
+      'Optimized backend infrastructure through database query tuning, API restructuring, and robust validation, significantly improving overall system reliability and scalability.',
       'Identified and resolved 45+ critical production bugs within large-scale systems, reducing user-reported errors by over 50% and improving client satisfaction.',
       'Developed interactive dashboards using Zustand and Redux to manage state and display complex real-time data clearly.',
     ],
@@ -132,7 +132,7 @@ export const PROJECTS = [
     featured: true,
 
     longDescription:
-      'Developed a comprehensive multi-vendor platform (Bengaldeli) designed to handle diverse storefronts. Key features include a custom vendor dashboard, JWT-based authentication, and a RESTful API architecture. I integrated the SSLCommerz payment gateway for localized transactions and utilized Redux for complex state management across customer and vendor workflows, ensuring a seamless, responsive UI/UX.',
+      'Developed a comprehensive multi-vendor platform (Bengaldeli) designed to handle diverse storefronts. Key features include a custom vendor dashboard, JWT-based authentication, and a RESTful API architecture. Integrated the SSLCommerz payment gateway for localized transactions and utilized Redux for complex state management across customer and vendor workflows, ensuring a seamless, responsive UI/UX.',
     tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'Redux', 'Tailwind CSS', 'SSLCommerz'],
 
     link: '#',
@@ -151,7 +151,7 @@ export const PROJECTS = [
 
     longDescription:
       'QuickHire is a modern MERN-based job portal that streamlines the recruitment process for both job seekers and employers. It offers real-time job search, seamless applications, and a fully responsive user experience. The platform includes a secure backend with validated APIs and an admin dashboard for efficient job management with instant UI updates.',
-    tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'Zustand', 'Axios ', 'Tailwind CSS'],
+    tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'Zustand', 'Axios', 'Tailwind CSS'],
 
     link: 'https://yeasin-quickhire.netlify.app/',
     github: 'https://github.com/ysncodex/QuickHire',
@@ -172,7 +172,7 @@ export const PROJECTS = [
     tech: [
       'React',
       'React DOM',
-      'Typescript',
+      'TypeScript',
       'React Router',
       'Axios',
       'Tailwind CSS',
@@ -194,7 +194,7 @@ export const PROJECTS = [
     featured: false,
 
     longDescription:
-      'A modern social media platform focused on real-time engagement. I implemented a component-based architecture using React and Zustand for efficient state management. The application features secure Firebase authentication, image hosting via Cloud Storage, and an interactive feed with real-time likes and comments. Designed with a mobile-first approach using Tailwind CSS to ensure a polished user experience.',
+      'A modern social media platform focused on real-time engagement. Implemented a component-based architecture using React and Zustand for efficient state management. The application features secure Firebase authentication, image hosting via Cloud Storage, and an interactive feed with real-time likes and comments. Designed with a mobile-first approach using Tailwind CSS to ensure a polished user experience.',
     tech: ['React.js', 'Firebase', 'Zustand', 'Tailwind CSS', 'React Hooks'],
 
     link: 'https://social-media-clone-created-by-yeasin.vercel.app/auth',

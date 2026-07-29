@@ -5,46 +5,69 @@ import { Briefcase } from 'lucide-react';
    Helper Functions
    ───────────────────────────────────────────── */
 
+/**
+ * Sums up every job period into a single, exact month count, then
+ * splits that into whole years + remaining months (no rounding).
+ */
 function calculateTotalExperience(experienceArray) {
   let totalMonths = 0;
 
   experienceArray.forEach((job) => {
-    // Split the period string (e.g., "September 2024 - December 2025")
     const [startStr, endStr] = job.period.split(' - ');
-    const startDate = new Date(startStr);
-    const endDate = endStr.toLowerCase() === 'present' ? new Date() : new Date(endStr);
+    if (!startStr || !endStr) return;
 
-    if (!isNaN(startDate) && !isNaN(endDate)) {
-      // Calculate total months between the two dates
-      const months =
-        (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-        (endDate.getMonth() - startDate.getMonth()) +
-        1; // +1 to include the starting month
+    const startDate = new Date(startStr.trim());
+    const isPresent = endStr.trim().toLowerCase() === 'present';
+    const endDate = isPresent ? new Date() : new Date(endStr.trim());
 
-      totalMonths += months > 0 ? months : 0;
-    }
+    if (isNaN(startDate) || isNaN(endDate)) return;
+
+    // +1 so both the starting and ending month are counted (inclusive range)
+    const months =
+      (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+      (endDate.getMonth() - startDate.getMonth()) +
+      1;
+
+    totalMonths += months > 0 ? months : 0;
   });
 
-  // Convert to years with one decimal place
-  return (totalMonths / 12).toFixed(1);
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+
+  return { years, months, totalMonths };
+}
+
+/**
+ * Turns { years, months } into a compact, human-readable label.
+ * e.g. "2 Yrs 8 Mos", "1 Yr", "6 Mos"
+ */
+function formatExperienceLabel({ years, months }) {
+  if (years <= 0 && months <= 0) return 'New';
+
+  const yearPart = years > 0 ? `${years} Year${years !== 1 ? 's' : ''}` : '';
+  const monthPart = months > 0 ? `${months} Month${months !== 1 ? 's' : ''}` : '';
+
+  return [yearPart, monthPart].filter(Boolean).join(' ');
 }
 
 /* ─────────────────────────────────────────────
    Sub-components
    ───────────────────────────────────────────── */
 
-function SectionHeader({ totalYears }) {
+function SectionHeader({ experienceLabel }) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
       <div className="flex items-center gap-4">
-        <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Where I&apos;ve Worked
         </h2>
         <div className="hidden md:block h-px bg-slate-200 dark:bg-zinc-800 w-12 lg:w-32"></div>
       </div>
+
       {/* Dynamic Experience Badge */}
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-100 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-500/30 text-violet-700 dark:text-violet-300 text-sm font-bold tracking-wide shadow-sm">
-        <Briefcase size={16} /> {totalYears} Years Experience
+      <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-violet-100 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-500/30 text-violet-700 dark:text-violet-300 text-xs sm:text-sm font-bold tracking-wide shadow-sm w-fit">
+        <Briefcase size={16} className="shrink-0" />
+        <span>{experienceLabel} Experience</span>
       </div>
     </div>
   );
@@ -60,7 +83,7 @@ function JobHeader({ role, company, period }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
       <div>
-        <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+        <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
           {role}
         </h3>
         <p className="text-violet-600 dark:text-violet-400 font-semibold mt-1">@ {company}</p>
@@ -75,7 +98,7 @@ function JobHeader({ role, company, period }) {
 function JobDescription({ description }) {
   if (Array.isArray(description)) {
     return (
-      <ul className="list-none space-y-3 mb-6 text-slate-600 dark:text-zinc-400 leading-relaxed">
+      <ul className="list-none space-y-3 mb-6 text-sm sm:text-base text-slate-600 dark:text-zinc-400 leading-relaxed">
         {description.map((point, i) => (
           <li
             key={i}
@@ -87,12 +110,16 @@ function JobDescription({ description }) {
       </ul>
     );
   }
-  return <p className="text-slate-600 dark:text-zinc-400 mb-6 leading-relaxed">{description}</p>;
+  return (
+    <p className="text-sm sm:text-base text-slate-600 dark:text-zinc-400 mb-6 leading-relaxed">
+      {description}
+    </p>
+  );
 }
 
 function TechTags({ tech }) {
   return (
-    <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-zinc-800/50">
+    <div className="flex flex-wrap gap-x-2 gap-y-1.5 pt-2 border-t border-slate-100 dark:border-zinc-800/50">
       {tech.map((t, i) => (
         <span
           key={i}
@@ -111,7 +138,7 @@ function TimelineEntry({ job }) {
     <div className="relative pl-8 md:pl-12 group">
       <TimelineDot />
 
-      <div className="bg-white dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800 p-6 md:p-8 rounded-2xl shadow-sm hover:shadow-lg dark:hover:shadow-violet-900/5 hover:border-violet-300 dark:hover:border-violet-500/30 transition-all duration-300">
+      <div className="bg-white dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800 p-5 sm:p-6 md:p-8 rounded-2xl shadow-sm hover:shadow-lg dark:hover:shadow-violet-900/5 hover:border-violet-300 dark:hover:border-violet-500/30 transition-all duration-300">
         <JobHeader role={job.role} company={job.company} period={job.period} />
         <JobDescription description={job.description} />
         <TechTags tech={job.tech} />
@@ -125,13 +152,14 @@ function TimelineEntry({ job }) {
    ───────────────────────────────────────────── */
 
 export default function Experience() {
-  const dynamicTotalYears = calculateTotalExperience(EXPERIENCE);
+  const duration = calculateTotalExperience(EXPERIENCE);
+  const experienceLabel = formatExperienceLabel(duration);
 
   return (
-    <section id="experience" className="scroll-mt-32 max-w-4xl mx-auto">
-      <SectionHeader totalYears={dynamicTotalYears} />
+    <section id="experience" className="scroll-mt-32 max-w-4xl mx-auto px-1">
+      <SectionHeader experienceLabel={experienceLabel} />
 
-      <div className="relative border-l-2 border-slate-200 dark:border-zinc-800 ml-2 md:ml-4 space-y-10 pb-4">
+      <div className="relative border-l-2 border-slate-200 dark:border-zinc-800 ml-2 md:ml-4 space-y-8 sm:space-y-10 pb-4">
         {EXPERIENCE.map((job) => (
           <TimelineEntry key={job.id} job={job} />
         ))}
