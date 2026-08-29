@@ -162,8 +162,8 @@ export const PROJECTS = [
   // Project 3 — Split Visual Card
   {
     id: 3,
-    title: 'Cafe ERP',
-    role: 'Frontend',
+    title: 'ERP Solutions',
+    role: 'Full-Stack',
     year: '2026',
     featured: false,
 
@@ -171,16 +171,16 @@ export const PROJECTS = [
       'A user-friendly cafe operations dashboard built with React and TypeScript. It helps owners and managers track sales, expenses, fund movements, and reports from one place, with optional backend API integration.',
     tech: [
       'React',
-      'React DOM',
       'TypeScript',
       'React Router',
-      'Axios',
       'Tailwind CSS',
-      'Lucide React',
+      'Node.js',
+      'Express.js',
+      'PostgreSQL',
     ],
 
-    link: 'https://cafeerp.netlify.app/',
-    github: 'https://github.com/ysncodex/Cafe-ERP',
+    link: 'https://erpasolutions.netlify.app/',
+    github: 'https://github.com/ysncodex/ERP_Solution',
     color: 'from-sky-400 to-blue-900',
     image: '/images/project-4.png',
   },
