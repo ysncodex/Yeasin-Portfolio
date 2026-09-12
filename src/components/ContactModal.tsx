@@ -1,14 +1,16 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Mail, Linkedin, Github, ChevronRight, X, Copy, CheckCircle } from 'lucide-react';
-import { PERSONAL_INFO } from '@/data/portfolio';
+import { PERSONAL_INFO } from '../data/portfolio';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
-/* ─────────────────────────────────────────────
-   Sub-components
-   ───────────────────────────────────────────── */
+interface ContactModalProps {
+  showContactModal: boolean;
+  setShowContactModal: (show: boolean) => void;
+}
 
-function Backdrop({ onClose }) {
+function Backdrop({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="absolute inset-0 bg-slate-900/40 dark:bg-zinc-950/80 backdrop-blur-sm animate-fade"
@@ -17,10 +19,11 @@ function Backdrop({ onClose }) {
   );
 }
 
-function CloseButton({ onClose }) {
+function CloseButton({ onClose }: { onClose: () => void }) {
   return (
     <button
       onClick={onClose}
+      aria-label="Close contact dialog"
       className="absolute top-4 right-4 p-2 text-slate-400 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-violet-500"
     >
       <X size={20} />
@@ -31,18 +34,29 @@ function CloseButton({ onClose }) {
 function ModalHeader() {
   return (
     <div className="mb-8 pr-8">
-      <h3 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mb-3 transition-colors tracking-tight">
+      <h3
+        id="contact-modal-title"
+        className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mb-3 transition-colors tracking-tight"
+      >
         Let&apos;s Connect
       </h3>
       <p className="text-slate-600 dark:text-zinc-400 transition-colors">
-        Choose your preferred method to get in touch. I&apos;m always open to discussing product
-        design work or partnership opportunities.
+        Choose your preferred method to get in touch. I&apos;m always open to discussing full-stack
+        engineering roles, freelance work, or a good technical problem.
       </p>
     </div>
   );
 }
 
-function EmailCard({ copied, onCopy }) {
+type CopyState = 'idle' | 'copied' | 'error';
+
+const COPY_LABELS: Record<CopyState, string> = {
+  idle: 'Copy Email',
+  copied: 'Copied!',
+  error: 'Select to copy',
+};
+
+function EmailCard({ copyState, onCopy }: { copyState: CopyState; onCopy: () => void }) {
   return (
     <div className="p-4 md:p-5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-violet-300 dark:hover:border-violet-500/50 transition-colors shadow-sm dark:shadow-none">
       <div className="flex items-center gap-4">
@@ -60,18 +74,30 @@ function EmailCard({ copied, onCopy }) {
         onClick={onCopy}
         className="shrink-0 px-4 py-2.5 rounded-lg bg-white dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 text-slate-900 dark:text-white border border-slate-200 dark:border-transparent text-sm font-bold transition-all active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto shadow-sm dark:shadow-none focus:outline-none focus:ring-2 focus:ring-violet-500"
       >
-        {copied ? (
+        {copyState === 'copied' ? (
           <CheckCircle size={16} className="text-emerald-500 dark:text-emerald-400" />
         ) : (
           <Copy size={16} />
         )}
-        {copied ? 'Copied!' : 'Copy Email'}
+        {COPY_LABELS[copyState]}
       </button>
     </div>
   );
 }
 
-function LinkCard({ href, iconBg, icon, label, title }) {
+function LinkCard({
+  href,
+  iconBg,
+  icon,
+  label,
+  title,
+}: {
+  href: string;
+  iconBg: string;
+  icon: React.ReactNode;
+  label: string;
+  title: string;
+}) {
   return (
     <a
       href={href}
@@ -98,40 +124,51 @@ function LinkCard({ href, iconBg, icon, label, title }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   Main Component
-   ───────────────────────────────────────────── */
-
-export default function ContactModal({ showContactModal, setShowContactModal }) {
-  const [copied, setCopied] = useState(false);
+export default function ContactModal({ showContactModal, setShowContactModal }: ContactModalProps) {
+  const [copyState, setCopyState] = useState<CopyState>('idle');
+  const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleClose = useCallback(() => setShowContactModal(false), [setShowContactModal]);
+  const dialogRef = useFocusTrap(showContactModal, handleClose);
 
-  const handleCopyEmail = useCallback(() => {
-    navigator.clipboard
-      .writeText(PERSONAL_INFO.email)
-      .then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      })
-      .catch(() => {});
+  useEffect(() => {
+    return () => {
+      if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current);
+    };
+  }, []);
+
+  const handleCopyEmail = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(PERSONAL_INFO.email);
+      setCopyState('copied');
+    } catch {
+      setCopyState('error');
+    }
+
+    if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current);
+    resetTimeoutRef.current = setTimeout(() => setCopyState('idle'), 2000);
   }, []);
 
   if (!showContactModal) return null;
 
   return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
       <Backdrop onClose={handleClose} />
 
       <div
-        className="relative w-full max-w-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700/50 rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/20 dark:shadow-violet-900/20 animate-modal p-6 md:p-10 transition-colors"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="contact-modal-title"
+        tabIndex={-1}
+        className="relative w-full max-w-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700/50 rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/20 dark:shadow-violet-900/20 animate-modal-sheet p-6 md:p-10 transition-colors"
         onClick={(e) => e.stopPropagation()}
       >
         <CloseButton onClose={handleClose} />
         <ModalHeader />
 
         <div className="space-y-4">
-          <EmailCard copied={copied} onCopy={handleCopyEmail} />
+          <EmailCard copyState={copyState} onCopy={handleCopyEmail} />
 
           <LinkCard
             href={PERSONAL_INFO.linkedin}

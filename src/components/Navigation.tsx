@@ -1,12 +1,21 @@
 'use client';
 
-import { useEffect } from 'react';
-import { Sun, Moon, X, Mail, User, Briefcase, FolderKanban } from 'lucide-react';
-import { PERSONAL_INFO } from '@/data/portfolio';
+import { Sun, Moon, Monitor, Command, X, Mail, User, Briefcase, FolderKanban } from 'lucide-react';
+import { PERSONAL_INFO } from '../data/portfolio';
+import { useFocusTrap } from '../hooks/useFocusTrap';
+import type { LucideIcon } from 'lucide-react';
 
-/* ─────────────────────────────────────────────
-   Constants
-   ───────────────────────────────────────────── */
+interface NavigationProps {
+  theme: string;
+  cycleTheme: () => void;
+  mounted: boolean;
+  isScrolled: boolean;
+  activeSection: string;
+  scrollTo: (id: string) => void;
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onOpenPalette: () => void;
+}
 
 const NAV_ITEMS = [
   { label: 'About', id: 'about', icon: User },
@@ -15,11 +24,14 @@ const NAV_ITEMS = [
   { label: 'Contact', id: 'contact', icon: Mail },
 ];
 
-/* ─────────────────────────────────────────────
-   Sub-components
-   ───────────────────────────────────────────── */
+const THEME_ICONS: Record<string, LucideIcon> = { light: Sun, dark: Moon, system: Monitor };
+const THEME_LABELS: Record<string, string> = {
+  light: 'Light theme',
+  dark: 'Dark theme',
+  system: 'System theme',
+};
 
-function Logo({ scrollTo }) {
+function Logo({ scrollTo }: { scrollTo: (id: string) => void }) {
   return (
     <a
       href="#home"
@@ -35,23 +47,64 @@ function Logo({ scrollTo }) {
   );
 }
 
-function ThemeToggle({ theme, toggleTheme, className, mounted }) {
+function ThemeToggle({
+  theme,
+  cycleTheme,
+  className,
+  mounted,
+  tabIndex,
+}: {
+  theme: string;
+  cycleTheme: () => void;
+  className: string;
+  mounted: boolean;
+  tabIndex?: number;
+}) {
+  const Icon = THEME_ICONS[theme] || Monitor;
   return (
-    <button onClick={toggleTheme} className={className} aria-label="Toggle Theme">
-      {mounted ? (
-        theme === 'dark' ? (
-          <Sun size={18} />
-        ) : (
-          <Moon size={18} />
-        )
-      ) : (
-        <span className="w-[18px] h-[18px]" />
-      )}
+    <button
+      onClick={cycleTheme}
+      tabIndex={tabIndex}
+      className={className}
+      aria-label={
+        mounted ? `${THEME_LABELS[theme] || 'System theme'} — click to change` : 'Toggle theme'
+      }
+    >
+      {mounted ? <Icon size={18} /> : <span className="w-[18px] h-[18px]" />}
     </button>
   );
 }
 
-function DesktopNav({ activeSection, scrollTo, theme, toggleTheme, mounted }) {
+function PaletteButton({
+  onClick,
+  className,
+  tabIndex,
+}: {
+  onClick: () => void;
+  className: string;
+  tabIndex?: number;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      tabIndex={tabIndex}
+      className={className}
+      aria-label="Open command palette (Ctrl or Cmd + K)"
+    >
+      <Command size={14} />
+      <span>K</span>
+    </button>
+  );
+}
+
+function DesktopNav({
+  activeSection,
+  scrollTo,
+  theme,
+  cycleTheme,
+  mounted,
+  onOpenPalette,
+}: Omit<NavigationProps, 'isScrolled' | 'mobileMenuOpen' | 'setMobileMenuOpen'>) {
   return (
     <div className="hidden md:flex items-center gap-10">
       {NAV_ITEMS.map(({ label, id }) => {
@@ -72,9 +125,14 @@ function DesktopNav({ activeSection, scrollTo, theme, toggleTheme, mounted }) {
 
       <div className="w-px h-4 bg-slate-300 dark:bg-zinc-700 mx-2"></div>
 
+      <PaletteButton
+        onClick={onOpenPalette}
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-violet-600 dark:hover:text-violet-400 hover:border-violet-300 dark:hover:border-violet-500/50 transition-all text-xs font-mono focus:ring-2 focus:ring-violet-500"
+      />
+
       <ThemeToggle
         theme={theme}
-        toggleTheme={toggleTheme}
+        cycleTheme={cycleTheme}
         mounted={mounted}
         className="p-2.5 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:text-violet-600 dark:hover:text-violet-400 transition-all hover:scale-105 focus:ring-2 focus:ring-violet-500"
       />
@@ -82,8 +140,7 @@ function DesktopNav({ activeSection, scrollTo, theme, toggleTheme, mounted }) {
   );
 }
 
-/* Animated hamburger <-> close icon. Pure CSS transforms, no JS animation lib. */
-function MenuToggle({ isOpen, onClick }) {
+function MenuToggle({ isOpen, onClick }: { isOpen: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -110,15 +167,34 @@ function MenuToggle({ isOpen, onClick }) {
   );
 }
 
-function MobileMenu({ isOpen, activeSection, scrollTo, onClose, theme, toggleTheme, mounted }) {
-  const handleNavClick = (id) => {
+function MobileMenu({
+  isOpen,
+  activeSection,
+  scrollTo,
+  onClose,
+  theme,
+  cycleTheme,
+  mounted,
+  onOpenPalette,
+}: {
+  isOpen: boolean;
+  activeSection: string;
+  scrollTo: (id: string) => void;
+  onClose: () => void;
+  theme: string;
+  cycleTheme: () => void;
+  mounted: boolean;
+  onOpenPalette: () => void;
+}) {
+  const drawerRef = useFocusTrap(isOpen, onClose);
+
+  const handleNavClick = (id: string) => {
     scrollTo(id);
     onClose();
   };
 
   return (
     <>
-      {/* Backdrop */}
       <div
         onClick={onClose}
         aria-hidden="true"
@@ -127,12 +203,13 @@ function MobileMenu({ isOpen, activeSection, scrollTo, onClose, theme, toggleThe
         }`}
       />
 
-      {/* Drawer */}
       <div
+        ref={drawerRef}
         role="dialog"
         aria-modal="true"
         aria-label="Mobile navigation"
         aria-hidden={!isOpen}
+        tabIndex={-1}
         className={`fixed top-0 right-0 z-50 h-[100dvh] w-[82%] max-w-xs flex flex-col bg-white dark:bg-zinc-950 border-l border-slate-200 dark:border-zinc-800 shadow-2xl md:hidden transition-transform duration-300 ease-out motion-reduce:transition-none ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
@@ -144,6 +221,7 @@ function MobileMenu({ isOpen, activeSection, scrollTo, onClose, theme, toggleThe
           <button
             onClick={onClose}
             aria-label="Close menu"
+            tabIndex={isOpen ? 0 : -1}
             className="p-2 text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-zinc-900 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
           >
             <X size={18} />
@@ -176,15 +254,27 @@ function MobileMenu({ isOpen, activeSection, scrollTo, onClose, theme, toggleThe
           })}
         </nav>
 
-        <div className="mt-auto p-6 flex flex-col gap-4 border-t border-slate-100 dark:border-zinc-900">
-          <ThemeToggle
-            theme={theme}
-            toggleTheme={toggleTheme}
-            mounted={mounted}
-            className="flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-slate-100 dark:bg-zinc-900 text-sm font-semibold dark:text-zinc-300"
-          />
+        <div className="mt-auto p-6 flex flex-col gap-3 border-t border-slate-100 dark:border-zinc-900">
+          <div className="flex items-center gap-3">
+            <ThemeToggle
+              theme={theme}
+              cycleTheme={cycleTheme}
+              mounted={mounted}
+              tabIndex={isOpen ? 0 : -1}
+              className="flex-1 flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-slate-100 dark:bg-zinc-900 text-sm font-semibold dark:text-zinc-300"
+            />
+            <PaletteButton
+              onClick={() => {
+                onOpenPalette();
+                onClose();
+              }}
+              tabIndex={isOpen ? 0 : -1}
+              className="flex items-center gap-1.5 px-4 py-3 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 text-xs font-mono"
+            />
+          </div>
           <a
             href={`mailto:${PERSONAL_INFO.email}`}
+            tabIndex={isOpen ? 0 : -1}
             className="flex items-center justify-center gap-2 text-slate-500 dark:text-zinc-500 text-sm"
           >
             <Mail size={16} /> Get in touch
@@ -195,38 +285,17 @@ function MobileMenu({ isOpen, activeSection, scrollTo, onClose, theme, toggleThe
   );
 }
 
-/* ─────────────────────────────────────────────
-   Main Component
-   ───────────────────────────────────────────── */
-
 export default function Navigation({
   theme,
-  toggleTheme,
+  cycleTheme,
   mounted,
   isScrolled,
   activeSection,
   scrollTo,
   mobileMenuOpen,
   setMobileMenuOpen,
-}) {
-  // Lock body scroll + allow Escape to close while the drawer is open
-  useEffect(() => {
-    if (!mobileMenuOpen) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setMobileMenuOpen(false);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [mobileMenuOpen, setMobileMenuOpen]);
-
+  onOpenPalette,
+}: NavigationProps) {
   return (
     <>
       <nav
@@ -238,22 +307,23 @@ export default function Navigation({
             activeSection={activeSection}
             scrollTo={scrollTo}
             theme={theme}
-            toggleTheme={toggleTheme}
+            cycleTheme={cycleTheme}
             mounted={mounted}
+            onOpenPalette={onOpenPalette}
           />
           <MenuToggle isOpen={mobileMenuOpen} onClick={() => setMobileMenuOpen((prev) => !prev)} />
         </div>
       </nav>
 
-      {/* Always mounted so the drawer/backdrop can transition in and out via CSS */}
       <MobileMenu
         isOpen={mobileMenuOpen}
         activeSection={activeSection}
         scrollTo={scrollTo}
         onClose={() => setMobileMenuOpen(false)}
         theme={theme}
-        toggleTheme={toggleTheme}
+        cycleTheme={cycleTheme}
         mounted={mounted}
+        onOpenPalette={onOpenPalette}
       />
     </>
   );

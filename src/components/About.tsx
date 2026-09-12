@@ -1,15 +1,8 @@
 import { Terminal, Code2, Cpu, Layers, Download, Database } from 'lucide-react';
-import { PERSONAL_INFO, SKILLS } from '@/data/portfolio';
-
-/* ─────────────────────────────────────────────
-   Constants
-   ───────────────────────────────────────────── */
+import { PERSONAL_INFO, SKILLS } from '../data/portfolio';
+import type { SkillGroup as SkillGroupType } from '../types';
 
 const SKILL_ICONS = [Code2, Cpu, Database, Layers];
-
-/* ─────────────────────────────────────────────
-   Sub-components
-   ───────────────────────────────────────────── */
 
 function SectionHeader() {
   return (
@@ -26,27 +19,23 @@ function Bio() {
   return (
     <div className="space-y-6 text-slate-600 dark:text-zinc-400 leading-relaxed text-lg">
       <p>
-        Hi, I&apos;m{' '}
-        <span className="font-semibold text-slate-900 dark:text-slate-200">
-          {PERSONAL_INFO.name}
-        </span>{' '}
-        — a Full-Stack Engineer passionate about building fast, scalable, and user-centered web
-        applications. I specialize in the React.js ecosystem, with robust backend experience in
-        Node.js, .NET Core, and relational databases like MSSQL.
+        I build production software for a living — mostly enterprise ERP systems: React on the
+        frontend, .NET Core or Node.js on the backend, MSSQL underneath.
       </p>
       <p>
-        During my time at Cultive8 Technologies, I contributed to enterprise ERP systems by building
-        production-ready modules and tackling system performance—reducing API latency and resolving
-        over 45 production issues. I thrive on creating clean architectures and responsive UI
-        systems that prioritize both accessibility and developer experience.
+        At Cultive8 Technologies, I built and shipped ERP modules end to end, dug into API and
+        database performance, and became the person people came to when something broke in
+        production — I&apos;ve resolved 45+ production issues there. Independently, I delivered
+        Nexus-ERP as a freelance engagement — the POS now running Beans &amp; Butter Cafe&apos;s
+        day-to-day orders and books.
       </p>
       <p>
         When I&apos;m not writing code on my favorite tactile mechanical keyboard, you can usually
         find me out for a walk, enjoying good food, or exploring new frontend architectures.
       </p>
       <p>
-        I hold a <strong>B.Sc. in Computer Science & Engineering</strong> from Green University of
-        Bangladesh, which laid the foundation for my approach to scalable software design.
+        I hold a <strong>B.Sc. in Computer Science &amp; Engineering</strong> from Green University
+        of Bangladesh, which laid the foundation for my approach to scalable software design.
       </p>
 
       <DownloadCVButton />
@@ -74,7 +63,7 @@ function DownloadCVButton() {
   );
 }
 
-function SkillGroup({ skillGroup, idx }) {
+function SkillGroup({ skillGroup, idx }: { skillGroup: SkillGroupType; idx: number }) {
   const Icon = SKILL_ICONS[idx];
 
   return (
@@ -106,10 +95,6 @@ function SkillsList() {
     </div>
   );
 }
-
-/* ─────────────────────────────────────────────
-   Main Component
-   ───────────────────────────────────────────── */
 
 export default function About() {
   return (

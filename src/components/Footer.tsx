@@ -1,5 +1,5 @@
 import { Github, Linkedin, Mail } from 'lucide-react';
-import { PERSONAL_INFO } from '@/data/portfolio';
+import { PERSONAL_INFO } from '../data/portfolio';
 
 const SOCIAL_LINKS = [
   { href: PERSONAL_INFO.github, icon: Github, external: true },

@@ -1,28 +1,46 @@
-import { EXPERIENCE } from '@/data/portfolio';
+import { EXPERIENCE } from '../data/portfolio';
 import { Briefcase } from 'lucide-react';
+import type { Experience as ExperienceType } from '../types';
 
-/* ─────────────────────────────────────────────
-   Helper Functions
-   ───────────────────────────────────────────── */
+const MONTH_PREFIXES = [
+  'jan',
+  'feb',
+  'mar',
+  'apr',
+  'may',
+  'jun',
+  'jul',
+  'aug',
+  'sep',
+  'oct',
+  'nov',
+  'dec',
+];
 
-/**
- * Sums up every job period into a single, exact month count, then
- * splits that into whole years + remaining months (no rounding).
- */
-function calculateTotalExperience(experienceArray) {
+/* `new Date('September 2024')` is not spec-compliant and returns Invalid Date in Safari. */
+function parseMonthYear(value: string) {
+  const [month, year] = value.trim().split(/\s+/);
+  const monthIndex = MONTH_PREFIXES.indexOf(month?.slice(0, 3).toLowerCase() ?? '');
+  const parsedYear = Number(year);
+
+  if (monthIndex === -1 || !Number.isInteger(parsedYear)) return null;
+
+  return new Date(parsedYear, monthIndex, 1);
+}
+
+function calculateTotalExperience(experienceArray: ExperienceType[]) {
   let totalMonths = 0;
 
   experienceArray.forEach((job) => {
     const [startStr, endStr] = job.period.split(' - ');
     if (!startStr || !endStr) return;
 
-    const startDate = new Date(startStr.trim());
+    const startDate = parseMonthYear(startStr);
     const isPresent = endStr.trim().toLowerCase() === 'present';
-    const endDate = isPresent ? new Date() : new Date(endStr.trim());
+    const endDate = isPresent ? new Date() : parseMonthYear(endStr);
 
-    if (isNaN(startDate) || isNaN(endDate)) return;
+    if (!startDate || !endDate) return;
 
-    // +1 so both the starting and ending month are counted (inclusive range)
     const months =
       (endDate.getFullYear() - startDate.getFullYear()) * 12 +
       (endDate.getMonth() - startDate.getMonth()) +
@@ -37,11 +55,7 @@ function calculateTotalExperience(experienceArray) {
   return { years, months, totalMonths };
 }
 
-/**
- * Turns { years, months } into a compact, human-readable label.
- * e.g. "2 Yrs 8 Mos", "1 Yr", "6 Mos"
- */
-function formatExperienceLabel({ years, months }) {
+function formatExperienceLabel({ years, months }: { years: number; months: number }) {
   if (years <= 0 && months <= 0) return 'New';
 
   const yearPart = years > 0 ? `${years} Year${years !== 1 ? 's' : ''}` : '';
@@ -50,11 +64,7 @@ function formatExperienceLabel({ years, months }) {
   return [yearPart, monthPart].filter(Boolean).join(' ');
 }
 
-/* ─────────────────────────────────────────────
-   Sub-components
-   ───────────────────────────────────────────── */
-
-function SectionHeader({ experienceLabel }) {
+function SectionHeader({ experienceLabel }: { experienceLabel: string }) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
       <div className="flex items-center gap-4">
@@ -64,10 +74,11 @@ function SectionHeader({ experienceLabel }) {
         <div className="hidden md:block h-px bg-slate-200 dark:bg-zinc-800 w-12 lg:w-32"></div>
       </div>
 
-      {/* Dynamic Experience Badge */}
       <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-violet-100 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-500/30 text-violet-700 dark:text-violet-300 text-xs sm:text-sm font-bold tracking-wide shadow-sm w-fit">
         <Briefcase size={16} className="shrink-0" />
-        <span>{experienceLabel} Experience</span>
+        {/* A "Present" role makes this depend on the current date, which drifts from the
+            prerendered HTML between deploys. The build-time value is the one we keep. */}
+        <span suppressHydrationWarning>{experienceLabel} Experience</span>
       </div>
     </div>
   );
@@ -79,7 +90,7 @@ function TimelineDot() {
   );
 }
 
-function JobHeader({ role, company, period }) {
+function JobHeader({ role, company, period }: { role: string; company: string; period: string }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
       <div>
@@ -95,7 +106,7 @@ function JobHeader({ role, company, period }) {
   );
 }
 
-function JobDescription({ description }) {
+function JobDescription({ description }: { description: string | string[] }) {
   if (Array.isArray(description)) {
     return (
       <ul className="list-none space-y-3 mb-6 text-sm sm:text-base text-slate-600 dark:text-zinc-400 leading-relaxed">
@@ -117,7 +128,7 @@ function JobDescription({ description }) {
   );
 }
 
-function TechTags({ tech }) {
+function TechTags({ tech }: { tech: string[] }) {
   return (
     <div className="flex flex-wrap gap-x-2 gap-y-1.5 pt-2 border-t border-slate-100 dark:border-zinc-800/50">
       {tech.map((t, i) => (
@@ -133,7 +144,7 @@ function TechTags({ tech }) {
   );
 }
 
-function TimelineEntry({ job }) {
+function TimelineEntry({ job }: { job: ExperienceType }) {
   return (
     <div className="relative pl-8 md:pl-12 group">
       <TimelineDot />
@@ -146,10 +157,6 @@ function TimelineEntry({ job }) {
     </div>
   );
 }
-
-/* ─────────────────────────────────────────────
-   Main Component
-   ───────────────────────────────────────────── */
 
 export default function Experience() {
   const duration = calculateTotalExperience(EXPERIENCE);

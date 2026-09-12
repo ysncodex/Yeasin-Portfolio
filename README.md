@@ -1,6 +1,10 @@
 # Md Yeasin — Portfolio
 
-A modern, responsive developer portfolio built with **Next.js 16**, **React 19**, and **Tailwind CSS 4**. Features dark/light theme, smooth scroll-spy navigation, animated UI, and interactive project modals.
+Personal developer portfolio for **Md Yeasin**, a Full-Stack Software Engineer based in Dhaka, Bangladesh.
+
+Built with **Next.js 16**, **React 19**, **TypeScript**, and **Tailwind CSS 4**.
+
+**Live:** [yeasin-dev.netlify.app](https://yeasin-dev.netlify.app)
 
 ---
 
@@ -12,59 +16,67 @@ A modern, responsive developer portfolio built with **Next.js 16**, **React 19**
 
 ## Features
 
-- **Dark / Light Theme** — persisted in `localStorage` with FOUC-free inline script
-- **Scroll-Spy Navigation** — RAF-throttled, highlights the current section in the navbar
-- **Animated Hero** — staggered fade-in-up entrance, floating profile image with hover effects
-- **Skills Grid** — categorized (Frontend, Backend, Database, Tools & Cloud) with icon labels
-- **Experience Timeline** — vertical timeline with tech tags per role
-- **Project Showcase** — 4 card variants (Hero, Typographic, Split Visual, Banner) in a grid
-- **Project Modal** — full-screen editorial layout with hero image, spec sheet, and action buttons
-- **Contact Modal** — copy-email, LinkedIn, and GitHub quick links
-- **Mouse Glow** — subtle radial gradient follows the cursor
-- **Background Layers** — noise overlay + diagonal gradient bands
-- **Mobile Responsive** — full-screen mobile menu, responsive grids, touch-friendly
-- **Accessible** — keyboard nav, focus rings, aria labels, semantic HTML
+- Responsive single-page portfolio
+- Dark, light, and system theme support
+- FOUC-free theme initialization
+- Scroll-spy navigation
+- Responsive mobile navigation
+- `Ctrl/Cmd + K` command palette
+- Professional experience timeline
+- Impact metrics
+- Interactive project case studies
+- Keyboard-accessible modals
+- Focus-trapped dialogs
+- Copy-to-clipboard contact flow
+- Reduced-motion support
+- SEO metadata and structured data
+- Open Graph and Twitter cards
+- Dynamic sitemap and robots configuration
+- Optimized fonts and images
+- Netlify deployment
 
 ---
 
 ## Tech Stack
 
-| Layer     | Technology                          |
-| --------- | ----------------------------------- |
-| Framework | Next.js 16 (App Router, Turbopack)  |
-| UI        | React 19, Tailwind CSS 4            |
-| Icons     | lucide-react                        |
-| Fonts     | Geist Sans & Geist Mono (next/font) |
-| Images    | next/image with priority loading    |
-| Modals    | next/dynamic (lazy-loaded, no SSR)  |
-| Linting   | ESLint 9 + eslint-config-next       |
+| Category   | Technology                    |
+| ---------- | ----------------------------- |
+| Framework  | Next.js 16                    |
+| UI         | React 19                      |
+| Language   | TypeScript                    |
+| Styling    | Tailwind CSS 4                |
+| Icons      | Lucide React                  |
+| Fonts      | Geist Sans, Geist Mono        |
+| Images     | Next.js Image                 |
+| SEO        | Next.js Metadata API, JSON-LD |
+| Linting    | ESLint 9                      |
+| Deployment | Netlify                       |
 
 ---
 
 ## Project Structure
 
-```
+```text
 src/
 ├── app/
-│   ├── globals.css          # Tailwind imports, keyframes, scrollbar, theme
-│   ├── layout.js            # Root layout, fonts, metadata, dark-mode script
-│   └── page.jsx             # Main page — hooks (theme, scroll-spy, glow, scroll-lock)
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── sitemap.ts
+│   ├── robots.ts
+│   └── not-found.tsx
+│
 ├── components/
-│   ├── BackgroundLayers.jsx  # Noise overlay, gradient bands, mouse glow
-│   ├── Navigation.jsx        # Logo, desktop/mobile nav, theme toggle
-│   ├── Hero.jsx              # Intro, CTAs, social pills, profile image
-│   ├── About.jsx             # Bio, download CV, skills grid
-│   ├── Experience.jsx        # Timeline with job entries & tech tags
-│   ├── Projects.jsx          # 4 card types in a responsive grid
-│   ├── Contact.jsx           # "Get In Touch" CTA section
-│   ├── Footer.jsx            # Social links, copyright
-│   ├── ContactModal.jsx      # Email copy, LinkedIn, GitHub cards
-│   └── ProjectModal.jsx      # Full-screen project detail view
 ├── data/
-│   └── portfolio.js          # All content: personal info, skills, experience, projects
+│   └── portfolio.ts
+├── hooks/
+│   └── useFocusTrap.ts
+└── types/
+    └── index.ts
+
 public/
-├── docs/                     # Resume & CV (PDF)
-└── images/                   # Avatar & project screenshots
+├── docs/
+└── images/
 ```
 
 ---
@@ -73,75 +85,104 @@ public/
 
 ### Prerequisites
 
-- **Node.js** ≥ 18
+- Node.js 20+
+- npm
+- Git
 
-### Install & Run
+### Installation
 
 ```bash
-# Clone the repo
 git clone https://github.com/ysncodex/yeasin-portfolio.git
 cd yeasin-portfolio
-
-# Install dependencies
 npm install
+```
 
-# Start development server
+Start the development server:
+
+```bash
 npm run dev
 ```
 
-Open **http://localhost:3000** to view the site.
+Open:
 
-### Build for Production
-
-```bash
-npm run build
-npm start
+```text
+http://localhost:3000
 ```
-
----
-
-## Customization
-
-All portfolio content lives in a single file — **`src/data/portfolio.js`**:
-
-| Section         | What to edit                                    |
-| --------------- | ----------------------------------------------- |
-| `PERSONAL_INFO` | Name, role, bio, email, socials, resume/CV path |
-| `SKILLS`        | Skill categories and items                      |
-| `EXPERIENCE`    | Job roles, companies, periods, descriptions     |
-| `PROJECTS`      | Titles, descriptions, tech, images, links       |
-
-Replace images in `public/images/` and documents in `public/docs/`.
 
 ---
 
 ## Scripts
 
-| Command         | Description                  |
-| --------------- | ---------------------------- |
-| `npm run dev`   | Start dev server (Turbopack) |
-| `npm run build` | Production build             |
-| `npm start`     | Serve production build       |
-| `npm run lint`  | Run ESLint                   |
+```bash
+npm run dev
+```
+
+Start the development server.
+
+```bash
+npm run build
+```
+
+Create a production build.
+
+```bash
+npm start
+```
+
+Run the production build locally.
+
+```bash
+npm run lint
+```
+
+Run ESLint.
+
+---
+
+## Core Dependencies
+
+```json
+{
+  "next": "16.1.6",
+  "react": "19.2.3",
+  "react-dom": "19.2.3",
+  "typescript": "6.0.3",
+  "tailwindcss": "^4",
+  "lucide-react": "^0.577.0"
+}
+```
+
+See [`package.json`](package.json) for the complete dependency list.
 
 ---
 
 ## Deployment
 
-Deploy instantly on [Vercel](https://vercel.com/new):
+The project is deployed on **Netlify** using the official Next.js plugin.
 
-1. Push to GitHub
-2. Import the repo on Vercel
-3. Deploy — zero config needed
+Production deployments are triggered automatically from the `main` branch.
 
-Or use any Node.js hosting that supports Next.js (Netlify, Railway, etc.).
+The application can also be deployed on Vercel or any platform supporting Next.js.
+
+---
+
+## Links
+
+- **Portfolio:** [yeasin-dev.netlify.app](https://yeasin-dev.netlify.app)
+- **GitHub:** [github.com/ysncodex](https://github.com/ysncodex)
+- **LinkedIn:** [linkedin.com/in/yeasin7](https://www.linkedin.com/in/yeasin7/)
+- **Email:** [yeasin7y@gmail.com](mailto:yeasin7y@gmail.com)
 
 ---
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is licensed under the terms defined in the [LICENSE](LICENSE) file.
 
 ---
 
-**Designed & Built by Md Yeasin © 2026**
+<p align="center">
+  <strong>Designed & built by <a href="https://yeasin-dev.netlify.app">Md Yeasin</a></strong>
+  <br />
+  Full-Stack Software Engineer
+</p>
